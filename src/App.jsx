@@ -10,11 +10,11 @@ function App() {
   const [animateStats, setAnimateStats] = useState(false)
 
   useEffect(() => {
-    // Show loader for minimum time
+    // Show loader for minimum time (reduced for faster load)
     const minTimer = setTimeout(() => {
       setLoading(false)
       setTimeout(() => setAnimateStats(true), 100)
-    }, 1200)
+    }, 800)
 
     // Fetch fresh data from backend (auto-detects local or production)
     const API_URL = window.location.hostname === 'localhost' 
