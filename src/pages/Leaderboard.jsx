@@ -202,47 +202,48 @@ function Leaderboard() {
 
         {/* Leaderboard Table */}
         <div className="card overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full table-fixed">
-              <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th className="w-20 px-4 py-4 text-left text-xs font-medium text-gray-600 uppercase">Rank</th>
-                  <th className="w-64 px-4 py-4 text-left text-xs font-medium text-gray-600 uppercase">Participant</th>
-                  <th className="w-32 px-4 py-4 text-center text-xs font-medium text-gray-600 uppercase">Completed</th>
-                  <th className="px-4 py-4 text-center text-xs font-medium text-gray-600 uppercase">Lab Completion Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {filteredData.map((profile) => (
-                  <tr key={profile.url} className={`hover:bg-gray-50 transition-colors ${profile.rank <= 3 ? 'bg-yellow-50/50' : ''}`}>
-                    <td className="px-4 py-5 whitespace-nowrap">
-                      <div className="flex items-center gap-2">
-                        {getRankBadge(profile.rank)}
-                      </div>
-                    </td>
-                    <td className="px-4 py-5">
-                      <div>
-                        <div className="font-medium text-gray-900">{profile.name}</div>
-                        <a
-                          href={profile.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-xs text-blue-600 hover:underline inline-flex items-center gap-1 mt-1"
-                        >
-                          View Profile <ExternalLink className="w-3 h-3" />
-                        </a>
-                      </div>
-                    </td>
-                    <td className="px-4 py-5 text-center">
-                      <div className="flex flex-col items-center gap-1">
-                        <span className="text-2xl font-semibold text-blue-600">{profile.completedCount}</span>
-                        <span className="text-xs text-gray-500">of {REQUIRED_LABS.length}</span>
-                      </div>
-                    </td>
-                    <td className="px-4 py-5">
-                      <div className="grid grid-cols-10 gap-2">
-                        {REQUIRED_LABS.map((lab) => {
-                          const isCompleted = profile.completedLabs.find(l => l.labId === lab.id)?.completed
+          <div className="overflow-x-auto -mx-4 sm:mx-0">
+            <div className="inline-block min-w-full align-middle">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50 border-b border-gray-200">
+                  <tr>
+                    <th className="px-3 sm:px-4 py-4 text-left text-xs font-medium text-gray-600 uppercase whitespace-nowrap">Rank</th>
+                    <th className="px-3 sm:px-4 py-4 text-left text-xs font-medium text-gray-600 uppercase whitespace-nowrap min-w-[180px]">Participant</th>
+                    <th className="px-3 sm:px-4 py-4 text-center text-xs font-medium text-gray-600 uppercase whitespace-nowrap">Completed</th>
+                    <th className="px-3 sm:px-4 py-4 text-center text-xs font-medium text-gray-600 uppercase whitespace-nowrap min-w-[600px]">Lab Completion Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100 bg-white">
+                  {filteredData.map((profile) => (
+                    <tr key={profile.url} className={`hover:bg-gray-50 transition-colors ${profile.rank <= 3 ? 'bg-yellow-50/50' : ''}`}>
+                      <td className="px-3 sm:px-4 py-5 whitespace-nowrap">
+                        <div className="flex items-center gap-2">
+                          {getRankBadge(profile.rank)}
+                        </div>
+                      </td>
+                      <td className="px-3 sm:px-4 py-5 min-w-[180px]">
+                        <div>
+                          <div className="font-medium text-gray-900 text-sm sm:text-base">{profile.name}</div>
+                          <a
+                            href={profile.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs text-blue-600 hover:underline inline-flex items-center gap-1 mt-1"
+                          >
+                            View Profile <ExternalLink className="w-3 h-3" />
+                          </a>
+                        </div>
+                      </td>
+                      <td className="px-3 sm:px-4 py-5 text-center whitespace-nowrap">
+                        <div className="flex flex-col items-center gap-1">
+                          <span className="text-xl sm:text-2xl font-semibold text-blue-600">{profile.completedCount}</span>
+                          <span className="text-xs text-gray-500">of {REQUIRED_LABS.length}</span>
+                        </div>
+                      </td>
+                      <td className="px-3 sm:px-4 py-5">
+                        <div className="grid grid-cols-10 gap-1.5 sm:gap-2 min-w-[600px]">
+                          {REQUIRED_LABS.map((lab) => {
+                            const isCompleted = profile.completedLabs.find(l => l.labId === lab.id)?.completed
                           return (
                             <div key={lab.id} className="flex items-center justify-center group relative" title={lab.name}>
                               {isCompleted ? (
@@ -263,6 +264,7 @@ function Leaderboard() {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
         </div>
 

@@ -91,11 +91,17 @@ function Home() {
     }
   })
 
-  // Top performers
+  // Top performers - Show full names (first + last) for all 10
   const topPerformers = data
     .sort((a, b) => b.completedCount - a.completedCount)
     .slice(0, 10)
-    .map(p => ({ name: p.name.split(' ')[0], labs: p.completedCount }))
+    .map(p => {
+      const nameParts = p.name.split(' ')
+      const shortName = nameParts.length > 2 
+        ? `${nameParts[0]} ${nameParts[nameParts.length - 1]}` 
+        : p.name
+      return { name: shortName, labs: p.completedCount }
+    })
 
   return (
     <div className="min-h-screen bg-white">
@@ -202,11 +208,16 @@ function Home() {
         {/* Top Performers */}
         <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm mb-8">
           <h2 className="text-lg font-normal text-gray-900 mb-4">Top 10 Performers</h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={topPerformers} layout="vertical">
+          <ResponsiveContainer width="100%" height={400}>
+            <BarChart data={topPerformers} layout="vertical" margin={{ left: 20 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
               <XAxis type="number" domain={[0, 20]} tick={{ fill: '#666' }} />
-              <YAxis dataKey="name" type="category" tick={{ fill: '#666' }} width={100} />
+              <YAxis 
+                dataKey="name" 
+                type="category" 
+                tick={{ fill: '#666', fontSize: 12 }} 
+                width={120} 
+              />
               <Tooltip />
               <Bar dataKey="labs" fill="#34A853" radius={[0, 4, 4, 0]} />
             </BarChart>
