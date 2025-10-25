@@ -47,7 +47,7 @@ function Leaderboard() {
 
   const processedData = useMemo(() => {
     const validProfiles = (leaderboardData || [])
-      .filter(profile => !profile.error && profile.name)
+      .filter(profile => profile.name)  // Only filter by name, ignore errors for now
       .map(profile => {
         const userBadges = profile.titles || []
         const completedLabs = REQUIRED_LABS.map(lab => {
