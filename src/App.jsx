@@ -62,7 +62,7 @@ function Navbar() {
 
 function App() {
   return (
-    <Router basename="/gdgc-frontend">
+    <Router>
       <div className="min-h-screen bg-gray-50">
         <Navbar />
         <Routes>
