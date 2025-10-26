@@ -30,29 +30,43 @@ function Leaderboard() {
   const [searchTerm, setSearchTerm] = useState('')
   const [sortBy, setSortBy] = useState('completed')
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
 
   useEffect(() => {
     const API_URL = window.location.hostname === 'localhost' 
       ? 'http://localhost:4000' 
       : 'https://fixedbackend-6w41.onrender.com'
-    
+    console.log('Fetching leaderboard from:', `${API_URL}/api/leaderboard`)
     fetch(`${API_URL}/api/leaderboard`)
-      .then(r => r.json())
+      .then(r => {
+        if (!r.ok) {
+          throw new Error('API response not ok: ' + r.status)
+        }
+        return r.json()
+      })
       .then(data => {
+        console.log('Fetched data:', data)
         setLeaderboardData(data || [])
         setLoading(false)
       })
-      .catch(() => setLoading(false))
+      .catch((err) => {
+        setError('Failed to fetch leaderboard: ' + err.message)
+        setLoading(false)
+        console.error('Fetch error:', err)
+      })
   }, [])
 
   const processedData = useMemo(() => {
+    // Show all profiles with a non-empty name
     const validProfiles = (leaderboardData || [])
-      .filter(profile => profile.name)  // Only filter by name, ignore errors for now
+      .filter(profile => profile.name && profile.name.trim() !== "")
       .map(profile => {
-        const userBadges = profile.titles || []
+        const userBadges = (profile.titles || []).map(b => b.toLowerCase().trim())
         const completedLabs = REQUIRED_LABS.map(lab => {
-          const isCompleted = userBadges.some(badge => 
-            badge.toLowerCase().includes(lab.name.toLowerCase())
+          const labName = lab.name.toLowerCase().trim()
+          const labShort = lab.short.toLowerCase().trim()
+          const isCompleted = userBadges.some(badge =>
+            badge.includes(labName) || badge.includes(labShort)
           )
           return { labId: lab.id, completed: isCompleted }
         })
@@ -77,11 +91,12 @@ function Leaderboard() {
   }, [processedData, searchTerm, sortBy])
 
   const stats = useMemo(() => {
-    const totalParticipants = processedData.filter(p => p.completedCount === 20).length
+    const totalParticipants = processedData.length;
+    const completedAll = processedData.filter(p => p.completedCount === REQUIRED_LABS.length).length;
     const totalLabsCompleted = processedData.reduce((sum, p) => sum + p.completedCount, 0)
     const avgCompletion = processedData.length > 0 ? ((totalLabsCompleted / (processedData.length * REQUIRED_LABS.length)) * 100).toFixed(1) : 0
     const topPerformer = processedData[0]
-    return { totalParticipants, totalLabsCompleted, avgCompletion, topPerformer }
+    return { totalParticipants, completedAll, totalLabsCompleted, avgCompletion, topPerformer }
   }, [processedData])
 
   const getRankBadge = (rank) => {
@@ -106,6 +121,20 @@ function Leaderboard() {
       </div>
     )
   }
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+        <div className="text-center">
+          <img 
+            src="/GDGCGGV.png" 
+            alt="GDGC GGV Logo" 
+            className="h-24 w-auto object-contain mx-auto mb-6 animate-pulse"
+          />
+          <p className="text-red-600 font-bold">{error}</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-white pb-12">
@@ -116,7 +145,7 @@ function Leaderboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600 mb-1">Completed (20/20)</p>
-                <p className="text-3xl font-normal text-gray-900">{stats.totalParticipants}</p>
+                <p className="text-3xl font-normal text-gray-900">{stats.completedAll}</p>
               </div>
               <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center">
                 <Users className="w-6 h-6 text-blue-600" />
@@ -127,8 +156,8 @@ function Leaderboard() {
           <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600 mb-1">Labs Completed</p>
-                <p className="text-3xl font-normal text-gray-900">{stats.totalLabsCompleted}</p>
+                <p className="text-sm text-gray-600 mb-1">Total Participants</p>
+                <p className="text-3xl font-normal text-gray-900">{stats.totalParticipants}</p>
               </div>
               <div className="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center">
                 <Trophy className="w-6 h-6 text-green-600" />

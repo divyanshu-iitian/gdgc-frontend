@@ -122,7 +122,7 @@ const LAB_RESOURCES = [
   {
     title: "Level 3: Generative AI",
     labs: [
-      { name: "Complete Level 3 Game", link: "https://www.cloudskillsboost.google/games/5443", video: "" }
+  { name: "Gen AI Arcade Games", link: "https://www.skills.google/games/6554", video: "" }
     ]
   }
 ]
